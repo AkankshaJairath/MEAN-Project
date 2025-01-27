@@ -1,11 +1,11 @@
 pipeline {
     agent any
     environment{
-        AWS_ACCESS_KEY='IAM_arpit'
-        SSH_KEY = credentials('ssh_arpit')
-        DOCKERHUB_CREDENTIALS= 'docker_arpit'
-        DOCKER_IMAGE_RESUME_BUILDER_FRONTEND = 'arpit/resume-fe'
-        DOCKER_IMAGE_RESUME_BUILDER_BACKEND = 'arpit/resume-be'
+        AWS_ACCESS_KEY='IAM_akanksha'
+        SSH_KEY = credentials('ssh_akanksha')
+        DOCKERHUB_CREDENTIALS= 'docker_akanksha'
+        DOCKER_IMAGE_RESUME_BUILDER_FRONTEND = 'akanksha/resume-fe'
+        DOCKER_IMAGE_RESUME_BUILDER_BACKEND = 'akanksha/resume-be'
     }
 
     stages {
@@ -17,7 +17,7 @@ pipeline {
         stage('CHECKOUT') {
             steps {
                 echo 'clone the git code' 
-                git branch: 'main', url:'https://github.com/arpit1605/ResumeBuilder.git'
+                git branch: 'main', url:'https://github.com/AkankshaJairath/ResumeBuilder.git'
             }
         }
         stage('create .env'){
@@ -69,20 +69,20 @@ pipeline {
         stage('eks connection'){
             steps{
                 script{
-                     withCredentials([aws(credentialsId: 'IAM_arpit', region:'eu-west-2')]) {
+                     withCredentials([aws(credentialsId: 'IAM_akanksha', region:'eu-west-2')]) {
                         echo "login success"
-                        def eksClusterExists = sh(script: 'aws eks describe-cluster --name arpit-eks-cluster-1 --region eu-west-2', 
+                        def eksClusterExists = sh(script: 'aws eks describe-cluster --name akanksha-eks-cluster-1 --region eu-west-2', 
                         returnStatus: true) == 0
                         if(!eksClusterExists)
                         {
                             sh '''
-                            eksctl create cluster --name arpit-eks-cluster-1 --region eu-west-2 --nodegroup-name standard-workers --node-type t2.micro --nodes 2 --nodes-min 1 --nodes-max 3
+                            eksctl create cluster --name akanksha-eks-cluster-1 --region eu-west-2 --nodegroup-name standard-workers --node-type t2.micro --nodes 2 --nodes-min 1 --nodes-max 3
                             '''
                         }
                         else{
                              sh '''
                             kubectl version --client
-                           aws eks --region eu-west-2 update-kubeconfig --name arpit-eks-cluster-1
+                           aws eks --region eu-west-2 update-kubeconfig --name akanksha-eks-cluster-1
                            cd  ResumeBuilderAngular/
                            kubectl apply -f frontend-deployment.yaml
                            kubectl apply -f backend-service.yaml
@@ -95,10 +95,10 @@ pipeline {
         // stage("eks deployment"){
         //     steps{
         //         script{
-        //             withCredentials([aws(credentialsId: 'IAM_arpit', region:'eu-west-2')]) {
+        //             withCredentials([aws(credentialsId: 'IAM_akanksha', region:'eu-west-2')]) {
         //                 sh '''
         //                 kubectl version --client
-        //                 aws eks --region eu-west-2 update-kubeconfig --name arpit-eks-cluster-1
+        //                 aws eks --region eu-west-2 update-kubeconfig --name akanksha-eks-cluster-1
         //                 cd ResumeBuilderBackend/
         //                 kubectl apply -f backend-deployment.yaml
         //                 kubectl apply -f backend-service.yaml
